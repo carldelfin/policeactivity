@@ -1,0 +1,12 @@
+# default ignore stuff
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+rsconnect/
