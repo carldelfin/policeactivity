@@ -2,13 +2,11 @@ library(shiny)
 library(httr)
 library(jsonlite)
 library(lubridate)
-library(raster)       # geodata functions
-library(leaflet)      # interactive map
-library(htmlwidgets)  # saving widgets
-
-options(stringsAsFactors = FALSE)
+library(leaflet)
 
 function(input, output) {
+  
+  options(stringsAsFactors = FALSE)
   
   url  <- "http://brottsplatskartan.se"
   path <- "/api/events/?area=skåne län"
