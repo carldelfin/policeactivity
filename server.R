@@ -3,14 +3,16 @@ library(httr)
 library(jsonlite)
 library(lubridate)
 library(leaflet)
-library(leaflet.extras)
 
 function(input, output) {
   
+  # output should be leaflet map
   output$map <- renderLeaflet({
     
     options(stringsAsFactors = FALSE)
     
+    # events are taken from the Brottskartan API, 
+    # which allows you to chose which county to get data from
     if (input$county == "Skåne") {
       path <- "/api/events/?area=Skåne län"
     }
@@ -24,22 +26,27 @@ function(input, output) {
       path <- "/api/events/?area=Kronobergs län"
     }
     
+    # define URL
     url  <- "http://brottsplatskartan.se"
+    
+    # define final path based on selection above,
+    # the 'input$events' part sets the number of events to show,
+    # with a maximum of 50, this is due to the API used to fetch data
     finalPath <- paste(path, "&limit=", input$events)
     
-    raw.data <- GET(url = url, path = finalPath) # get URL
+    raw.data <- GET(url = url, path = finalPath) # retrieve URL
     raw.data <- rawToChar(raw.data$content)      # convert to character
     raw.data <- fromJSON(raw.data)               # convert from JSON to R data
-    data <- raw.data$data                        # store as 'data
-    
+    data <- raw.data$data                        # store as 'data'
+    rm(raw.data)                                 # remove 'raw.data' variable
     data <- data[-c(1, 3, 5, 8:9, 11, 14:22)]    # remove columns we don't want
     
-    # extracting date, timestamp out of a single string
+    # do some gsub magic to extract date and timestamp from a single string
     data$date <- gsub("T.*", "", data$pubdate_iso8601)
     data$pubdate_iso8601 <- gsub(".*T", "", data$pubdate_iso8601)
     data$pubdate_iso8601 <- gsub("\\+.*", "", data$pubdate_iso8601)
     
-    # create popup windows
+    # create popup windows with description
     popup <- paste0("<br><b>Ärende: </b>", data$title_type,
                     "<br><b>Plats: </b>", data$location_string,
                     "<br><b>Datum: </b>", data$date,
