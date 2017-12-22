@@ -11,7 +11,7 @@ function(input, output) {
     
     options(stringsAsFactors = FALSE)
     
-    # events are taken from the Brottskartan API, 
+    # events are retrieved using the Brottsplatskartan API, 
     # which allows you to chose which county to get data from
     if (input$county == "Skåne") {
       path <- "/api/events/?area=Skåne län"
